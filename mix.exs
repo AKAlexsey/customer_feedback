@@ -46,7 +46,8 @@ defmodule CustomerFeedback.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:broadway, "~> 0.6.2"},
-      {:amqp, "~> 2.1"}
+      {:amqp, "~> 2.1"},
+      {:elasticsearch, "~> 1.0.0"}
     ]
   end
 
