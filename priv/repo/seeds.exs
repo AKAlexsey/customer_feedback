@@ -1,11 +1,7 @@
-# Script for populating the database. You can run it as:
-#
-#     mix run priv/repo/seeds.exs
-#
-# Inside the script, you can read and write to any of your
-# repositories directly:
-#
-#     CustomerFeedback.Repo.insert!(%CustomerFeedback.SomeSchema{})
-#
-# We recommend using the bang functions (`insert!`, `update!`
-# and so on) as they will fail if something goes wrong.
+alias CustomerFeedback.Users
+
+default_admin_params = %{
+  name: "Alpha and Omega"
+}
+
+{:ok, _admin} = Users.create_admin(default_admin_params)

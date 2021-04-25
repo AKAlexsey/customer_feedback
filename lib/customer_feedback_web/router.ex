@@ -16,7 +16,9 @@ defmodule CustomerFeedbackWeb.Router do
   scope "/", CustomerFeedbackWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
+    resources "/admins", AdminController
+
+    get "/", DashboardController, :index
   end
 
   # Other scopes may use custom stacks.

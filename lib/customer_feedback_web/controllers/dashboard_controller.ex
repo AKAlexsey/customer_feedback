@@ -1,4 +1,4 @@
-defmodule CustomerFeedbackWeb.PageController do
+defmodule CustomerFeedbackWeb.DashboardController do
   use CustomerFeedbackWeb, :controller
 
   def index(conn, _params) do

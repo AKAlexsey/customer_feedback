@@ -45,7 +45,8 @@ defmodule CustomerFeedback.MixProject do
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
-      {:broadway, "~> 0.6.2"}
+      {:broadway, "~> 0.6.2"},
+      {:amqp, "~> 2.1"}
     ]
   end
 
