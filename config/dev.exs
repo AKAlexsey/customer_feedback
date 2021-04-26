@@ -1,6 +1,5 @@
 use Mix.Config
 
-# Configure your database
 config :customer_feedback, CustomerFeedback.Repo,
   username: "postgres",
   password: "postgres",
@@ -9,12 +8,6 @@ config :customer_feedback, CustomerFeedback.Repo,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
-# For development, we disable any cache and enable
-# debugging and code reloading.
-#
-# The watchers configuration can be used to run external
-# watchers to your application. For example, we use it
-# with webpack to recompile .js and .css sources.
 config :customer_feedback, CustomerFeedbackWeb.Endpoint,
   http: [port: 4000],
   debug_errors: true,
@@ -28,6 +21,18 @@ config :customer_feedback, CustomerFeedbackWeb.Endpoint,
       "--watch-stdin",
       cd: Path.expand("../assets", __DIR__)
     ]
+  ]
+
+config :customer_feedback, CustomerFeedback.ElasticsearchCluster,
+  url: "http://localhost:9200",
+  username: "elastic",
+  password: "changeme",
+  api: Elasticsearch.API.HTTP,
+  json_library: Jason,
+  default_options: [
+    timeout: 5_000,
+    recv_timeout: 5_000,
+    hackney: [pool: :pool_name]
   ]
 
 # ## SSL Support
