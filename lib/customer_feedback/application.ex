@@ -3,6 +3,8 @@ defmodule CustomerFeedback.Application do
 
   use Application
 
+  alias CustomerFeedback.Pipeline.FeedbackProducer
+
   def start(_type, _args) do
     children = [
       CustomerFeedback.Repo,
@@ -10,7 +12,8 @@ defmodule CustomerFeedback.Application do
       # {Phoenix.PubSub, name: CustomerFeedback.PubSub}, # commented because does not used for a while.
       CustomerFeedbackWeb.Endpoint,
       CustomerFeedback.ElasticsearchCluster,
-      {CustomerFeedback.Pipeline.FeedbackGatewayBroadway, []}
+      {CustomerFeedback.Pipeline.FeedbackGatewayBroadway, []},
+      FeedbackProducer
     ]
 
     opts = [strategy: :one_for_one, name: CustomerFeedback.Supervisor]
