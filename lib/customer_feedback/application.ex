@@ -7,9 +7,10 @@ defmodule CustomerFeedback.Application do
     children = [
       CustomerFeedback.Repo,
       CustomerFeedbackWeb.Telemetry,
-      {Phoenix.PubSub, name: CustomerFeedback.PubSub},
+      # {Phoenix.PubSub, name: CustomerFeedback.PubSub}, # commented because does not used for a while.
       CustomerFeedbackWeb.Endpoint,
-      CustomerFeedback.ElasticsearchCluster
+      CustomerFeedback.ElasticsearchCluster,
+      {CustomerFeedback.Pipeline.FeedbackGatewayBroadway, []}
     ]
 
     opts = [strategy: :one_for_one, name: CustomerFeedback.Supervisor]
