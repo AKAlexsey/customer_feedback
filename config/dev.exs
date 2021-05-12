@@ -35,6 +35,9 @@ config :customer_feedback, CustomerFeedback.ElasticsearchCluster,
     hackney: [pool: :pool_name]
   ]
 
+config :customer_feedback, CustomerFeedback.FeedbackGateway.Broadway,
+  queue_name: "customer_feedback_queue"
+
 # ## SSL Support
 #
 # In order to use HTTPS in development, a self-signed

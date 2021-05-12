@@ -1,4 +1,4 @@
-defmodule CustomerFeedback.Pipeline.FeedbackGatewayBroadway do
+defmodule CustomerFeedback.FeedbackGateway.Broadway do
   use Broadway
 
   # Push messages to the processors
@@ -6,18 +6,20 @@ defmodule CustomerFeedback.Pipeline.FeedbackGatewayBroadway do
 
   alias Broadway.Message
 
-  alias CustomerFeedback.Pipeline.FeedbackProducer
+  # alias CustomerFeedback.Pipeline.FeedbackProducer
+
+  @queue_name Application.get_env(:customer_feedback, __MODULE__)[:queue_name]
 
   # Public API
   # TODO there is problem every 4 feedbacks forward to the same processor.
   # And after that it generates one demand. It's very strange behaviour it's necessary to find out why it happens
-  def get_customer_feedback(message) do
-    __MODULE__
-    |> Broadway.producer_names()
-    |> Enum.each(fn name ->
-      GenStage.cast(name, message)
-    end)
-  end
+  #  def get_customer_feedback(message) do
+  #    __MODULE__
+  #    |> Broadway.producer_names()
+  #    |> Enum.each(fn name ->
+  #      GenStage.cast(name, message)
+  #    end)
+  #  end
 
   # Callbacks
   def start_link(_opts) do
@@ -25,7 +27,7 @@ defmodule CustomerFeedback.Pipeline.FeedbackGatewayBroadway do
       __MODULE__,
       name: __MODULE__,
       producer: [
-        module: {FeedbackProducer, []},
+        module: {BroadwayRabbitMQ.Producer, queue: @queue_name},
         concurrency: 1,
         transformer: {__MODULE__, :transform, []},
         rate_limiting: [
@@ -34,7 +36,7 @@ defmodule CustomerFeedback.Pipeline.FeedbackGatewayBroadway do
         ]
       ],
       processors: [
-        default: [concurrency: 4]
+        default: [concurrency: 5]
       ]
     )
   end

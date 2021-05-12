@@ -33,6 +33,7 @@ defmodule CustomerFeedback.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      # Web server
       {:phoenix, "~> 1.5.8"},
       {:phoenix_ecto, "~> 4.1"},
       {:ecto_sql, "~> 3.4"},
@@ -42,11 +43,15 @@ defmodule CustomerFeedback.MixProject do
       {:phoenix_live_dashboard, "~> 0.4"},
       {:telemetry_metrics, "~> 0.4"},
       {:telemetry_poller, "~> 0.4"},
+      {:plug_cowboy, "~> 2.0"},
+      # Tools
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
-      {:plug_cowboy, "~> 2.0"},
+      # Broadway
       {:broadway, "~> 0.6.2"},
-      {:amqp, "~> 2.1"},
+      {:broadway_rabbitmq, "~> 0.6.0"},
+      # External services clients
+      {:amqp, "~> 1.3"},
       {:elasticsearch, "~> 1.0.0"}
     ]
   end
