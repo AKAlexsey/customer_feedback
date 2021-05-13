@@ -4,22 +4,13 @@ defmodule CustomerFeedback.FeedbackGateway.Broadway do
   # Push messages to the processors
   # Broadway.push_messages(FeedbackGatewayBroadway, [FeedbackGatewayBroadway.transform(1, [])])
 
+
+
   alias Broadway.Message
 
   # alias CustomerFeedback.Pipeline.FeedbackProducer
 
   @queue_name Application.get_env(:customer_feedback, __MODULE__)[:queue_name]
-
-  # Public API
-  # TODO there is problem every 4 feedbacks forward to the same processor.
-  # And after that it generates one demand. It's very strange behaviour it's necessary to find out why it happens
-  #  def get_customer_feedback(message) do
-  #    __MODULE__
-  #    |> Broadway.producer_names()
-  #    |> Enum.each(fn name ->
-  #      GenStage.cast(name, message)
-  #    end)
-  #  end
 
   # Callbacks
   def start_link(_opts) do
@@ -41,9 +32,13 @@ defmodule CustomerFeedback.FeedbackGateway.Broadway do
     )
   end
 
+  # TODO implement bulk document insertion using Broadway batching
+  # Input document
+  # Elasticsearch.post_document(CustomerFeedback.ElasticsearchCluster, %CustomerFeedback.CustomerInput.FeedbackDocument{title: "Example", author: "Willie wonka", evaluation: 9}, "feedback_documents")
+  #
   @impl true
-  def handle_message(processor, message, context) do
-    IO.puts("!!! processor #{inspect(processor)}\nmessage #{inspect(message)}\ncontext #{inspect(context)}\npid: #{inspect(self())}")
+  def handle_message(_, message, context) do
+    IO.puts("!!! processor\nmessage #{inspect(message)}\ncontext #{inspect(context)}\npid: #{inspect(self())}")
     message
   end
 
