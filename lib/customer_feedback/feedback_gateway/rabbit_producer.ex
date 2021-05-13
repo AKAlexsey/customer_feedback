@@ -32,13 +32,14 @@ defmodule CustomerFeedback.FeedbackGateway.RabbitProducer do
   end
 
   def handle_cast({:put_message, message}, %{channel: channel} = state) do
+    IO.puts("!!! put_message #{message}")
     AMQP.Basic.publish(channel, "", @queue_name, message)
 
     {:noreply, state}
   end
 
   # TODO some why does not work
-  def terminate(reason, %{connection: connection} = state) do
+  def terminate(reason, %{connection: connection}) do
     IO.puts("!!! closing connection #{inspect(connection)}, reason: #{reason}")
     AMQP.Connection.close(connection)
 

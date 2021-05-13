@@ -21,6 +21,12 @@ defmodule CustomerFeedbackWeb.Router do
     get "/", DashboardController, :index
   end
 
+  scope "/api", CustomerFeedbackWeb do
+    pipe_through :api
+
+    post "customer_feedback", CustomerFeedbackController, :create
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", CustomerFeedbackWeb do
   #   pipe_through :api
