@@ -24,7 +24,7 @@ defmodule CustomerFeedbackWeb.Router do
   scope "/api", CustomerFeedbackWeb do
     pipe_through :api
 
-    post "customer_feedback", CustomerFeedbackController, :create
+    post "/customer_feedback", CustomerFeedbackController, :create
   end
 
   # Other scopes may use custom stacks.

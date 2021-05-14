@@ -52,7 +52,9 @@ defmodule CustomerFeedback.MixProject do
       {:broadway_rabbitmq, "~> 0.6.0"},
       # External services clients
       {:amqp, "~> 1.3"},
-      {:elasticsearch, "~> 1.0.0"}
+      {:elasticsearch, "~> 1.0.0"},
+      # Testing
+      {:mox, "~> 1.0.0"}
     ]
   end
 

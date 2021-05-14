@@ -32,7 +32,6 @@ defmodule CustomerFeedback.FeedbackGateway.RabbitProducer do
   end
 
   def handle_cast({:put_message, message}, %{channel: channel} = state) do
-    IO.puts("!!! put_message #{message}")
     AMQP.Basic.publish(channel, "", @queue_name, message)
 
     {:noreply, state}

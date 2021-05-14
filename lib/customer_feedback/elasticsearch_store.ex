@@ -1,8 +1,6 @@
 defmodule CustomerFeedback.ElasticsearchStore do
   @behaviour Elasticsearch.Store
 
-  import Ecto.Query
-
   alias CustomerFeedback.Repo
 
   @impl true

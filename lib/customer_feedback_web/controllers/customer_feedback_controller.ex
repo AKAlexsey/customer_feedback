@@ -8,12 +8,16 @@ defmodule CustomerFeedbackWeb.CustomerFeedbackController do
 
   alias CustomerFeedback.FeedbackGateway.RabbitProducer
 
-  def create(conn, _params) do
-    {:ok, body, conn} = Plug.Conn.read_body(conn)
+  def create(conn, feedback_params) do
     customer_id = Plug.Conn.get_session(conn, "customer_id")
 
-    if binary_present(customer_id) && binary_present(body) do
-      RabbitProducer.put_message("#{customer_id} #{body}")
+    if map_size(feedback_params) > 0 do
+      # TODO move Jason encoding to separate Broadway
+      feedback_params
+      |> Map.put("customer_id", customer_id)
+      |> Jason.encode!()
+      |> RabbitProducer.put_message()
+
       send_resp(conn, 200, "")
     else
       send_resp(conn, 422, "Request invalid")

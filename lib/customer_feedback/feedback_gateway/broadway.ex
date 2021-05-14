@@ -1,14 +1,8 @@
 defmodule CustomerFeedback.FeedbackGateway.Broadway do
   use Broadway
 
-  # Push messages to the processors
-  # Broadway.push_messages(FeedbackGatewayBroadway, [FeedbackGatewayBroadway.transform(1, [])])
-
-
-
   alias Broadway.Message
-
-  # alias CustomerFeedback.Pipeline.FeedbackProducer
+  alias CustomerFeedback.Elasticsearch.Context, as: ElasticsearchContext
 
   @queue_name Application.get_env(:customer_feedback, __MODULE__)[:queue_name]
 
@@ -37,8 +31,14 @@ defmodule CustomerFeedback.FeedbackGateway.Broadway do
   # Elasticsearch.post_document(CustomerFeedback.ElasticsearchCluster, %CustomerFeedback.CustomerInput.FeedbackDocument{title: "Example", author: "Willie wonka", evaluation: 9}, "feedback_documents")
   #
   @impl true
-  def handle_message(_, message, context) do
-    IO.puts("!!! processor\nmessage #{inspect(message)}\ncontext #{inspect(context)}\npid: #{inspect(self())}")
+  def handle_message(_, %{data: %{data: raw_feedback_document}} = message, _context) do
+    IO.puts("!!! processor message\n#{inspect(message)}")
+
+    # TODO Add logging in case of invalid messages
+    raw_feedback_document
+    |> Jason.decode!()
+    |> ElasticsearchContext.create_feedback_document()
+
     message
   end
 

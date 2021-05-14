@@ -20,3 +20,9 @@ config :customer_feedback, CustomerFeedbackWeb.Endpoint,
 
 # Print only warnings and errors during test
 config :logger, level: :warn
+
+config :customer_feedback, CustomerFeedback.ElasticsearchCluster,
+  api: CustomerFeedback.ElasticsearchApiMock
+
+config :customer_feedback, CustomerFeedback.FeedbackGateway.Broadway,
+  queue_name: "customer_feedback_queue"
