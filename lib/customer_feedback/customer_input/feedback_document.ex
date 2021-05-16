@@ -13,18 +13,6 @@ defmodule CustomerFeedback.CustomerInput.FeedbackDocument do
   #    "result" => "created"
   #  }}
 
-  #  {:ok,
-  #    %{
-  #      "_id" => "-7LaaXkBO7I9u1E_ja4O",
-  #      "_index" => "feedback_documents-1620922372988908",
-  #      "_primary_term" => 2,
-  #      "_seq_no" => 1,
-  #      "_shards" => %{"failed" => 0, "successful" => 1, "total" => 2},
-  #      "_type" => "_doc",
-  #      "_version" => 1,
-  #      "result" => "created"
-  #    }}
-
   use Ecto.Schema
   import Ecto.Changeset
 

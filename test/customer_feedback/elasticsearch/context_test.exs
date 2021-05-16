@@ -62,9 +62,15 @@ defmodule CustomerFeedback.Elasticsearch.ContextTest do
       mocked_index: mocked_index,
       customer_id: customer_id
     } do
-      params = %{evaluation: 8, product_url: "https://localhost:4000/awesome_kettle/3", customer_id: customer_id}
+      evaluation = 8
+      product_url = "https://localhost:4000/awesome_kettle/3"
+      params = %{evaluation: evaluation, product_url: product_url, customer_id: customer_id}
+      feedback_document_standard =  %CustomerFeedback.CustomerInput.FeedbackDocument{author: nil, customer_id: customer_id, evaluation: evaluation, id: nil, product_url: product_url, text: nil, title: nil}
 
-      post_document_mock = fn _, _, _ -> success_elastic_response end
+      post_document_mock = fn _, feedback_document, _ ->
+        assert ^feedback_document_standard = feedback_document
+        success_elastic_response
+      end
 
       assert {:ok, ^mocked_index} = Context.create_feedback_document(params, post_document_mock)
     end

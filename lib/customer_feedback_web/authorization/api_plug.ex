@@ -11,7 +11,7 @@ defmodule CustomerFeedbackWeb.Authorization.ApiPlug do
     with {:ok, {customer_id, customer_token}} <- fetch_customer_credentials(request_headers_list),
          :ok <- verify_customer_token(customer_id, customer_token) do
       conn
-      |> put_session(:customer_id, customer_id)
+      |> put_session(:customer_id, "customer_id_#{:rand.uniform(3)}")
     else
       {:error, reason} ->
         conn

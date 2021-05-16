@@ -35,9 +35,11 @@ defmodule CustomerFeedback.FeedbackGateway.Broadway do
     IO.puts("!!! processor message\n#{inspect(message)}")
 
     # TODO Add logging in case of invalid messages
-    raw_feedback_document
+    result = raw_feedback_document
     |> Jason.decode!()
     |> ElasticsearchContext.create_feedback_document()
+
+    IO.puts("!!! insertion result #{inspect(result)}")
 
     message
   end

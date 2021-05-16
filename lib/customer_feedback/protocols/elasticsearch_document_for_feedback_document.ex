@@ -7,7 +7,8 @@ defimpl Elasticsearch.Document, for: CustomerFeedback.CustomerInput.FeedbackDocu
       author: feedback_document.author,
       text: feedback_document.text,
       evaluation: feedback_document.evaluation,
-      product_url: feedback_document.product_url
+      product_url: feedback_document.product_url,
+      customer_id: feedback_document.customer_id
     }
   end
 end
