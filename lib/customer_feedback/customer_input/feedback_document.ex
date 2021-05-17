@@ -1,18 +1,6 @@
 defmodule CustomerFeedback.CustomerInput.FeedbackDocument do
   @moduledoc false
 
-  # First document
-  #  %{
-  #    "_id" => "MOaBZnkBtFt1Lk6-NbCY",
-  #    "_index" => "feedback_documents-1620922372988908",
-  #    "_primary_term" => 1,
-  #    "_seq_no" => 0,
-  #    "_shards" => %{"failed" => 0, "successful" => 1, "total" => 2},
-  #    "_type" => "_doc",
-  #    "_version" => 1,
-  #    "result" => "created"
-  #  }}
-
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -21,6 +9,8 @@ defmodule CustomerFeedback.CustomerInput.FeedbackDocument do
 
   @minimum_evaluation 0
   @maximum_evaluation 10
+
+  @type t :: %__MODULE__{}
 
   schema "feedback_documents" do
     field :title, :string
@@ -37,8 +27,8 @@ defmodule CustomerFeedback.CustomerInput.FeedbackDocument do
     |> cast(attrs, @cast_fields)
     |> validate_required(@required_fields)
     |> validate_number(:evaluation,
-      greater_than_or_equal_to: @minimum_evaluation,
-      less_than_or_equal_to: @maximum_evaluation
-    )
+         greater_than_or_equal_to: @minimum_evaluation,
+         less_than_or_equal_to: @maximum_evaluation
+       )
   end
 end

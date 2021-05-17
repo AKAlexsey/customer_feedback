@@ -1,0 +1,42 @@
+<h1>Show Feedback document</h1>
+
+<ul>
+
+  <li>
+    <strong>ID:</strong>
+    <%= @feedback_document.id %>
+  </li>
+
+  <li>
+    <strong>Title:</strong>
+    <%= @feedback_document.title %>
+  </li>
+
+  <li>
+    <strong>Author:</strong>
+    <%= @feedback_document.author %>
+  </li>
+
+  <li>
+    <strong>Text:</strong>
+    <%= @feedback_document.text %>
+  </li>
+
+  <li>
+    <strong>Product url:</strong>
+    <%= @feedback_document.product_url %>
+  </li>
+
+  <li>
+    <strong>Evaluation:</strong>
+    <%= @feedback_document.evaluation %>
+  </li>
+
+  <li>
+    <strong>Customer:</strong>
+    <%= @feedback_document.customer_id %>
+  </li>
+
+</ul>
+
+<span><%= link "Back", to: Routes.feedback_document_path(@conn, :index) %></span>

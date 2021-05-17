@@ -1,0 +1,32 @@
+<h1>Listing Feedback documents</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Title</th>
+      <th>Author</th>
+      <th>Product url</th>
+      <th>Evaluation</th>
+      <th>Customer</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for feedback_document <- @feedback_documents do %>
+    <tr>
+      <td><%= feedback_document.id %></td>
+      <td><%= feedback_document.title %></td>
+      <td><%= feedback_document.author %></td>
+      <td><%= feedback_document.product_url %></td>
+      <td><%= feedback_document.evaluation %></td>
+      <td><%= feedback_document.customer_id %></td>
+
+      <td>
+        <span><%= link "Show", to: Routes.feedback_document_path(@conn, :show, feedback_document.id) %></span>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>

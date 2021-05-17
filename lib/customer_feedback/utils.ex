@@ -27,4 +27,11 @@ defmodule CustomerFeedback.Utils do
     end)
     |> Enum.join("; ")
   end
+
+  @spec safe_to_integer(integer | binary) :: integer
+  def safe_to_integer(value) when is_integer(value), do: value
+  def safe_to_integer(value) when is_binary(value) do
+    {integer_value, _} = Integer.parse(value)
+    integer_value
+  end
 end

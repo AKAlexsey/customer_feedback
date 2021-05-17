@@ -19,6 +19,7 @@ defmodule CustomerFeedbackWeb.Router do
     resources "/admins", AdminController
 
     get "/", DashboardController, :index
+    resources "/feedback_documents", FeedbackDocumentController, only: [:index, :show]
   end
 
   scope "/api", CustomerFeedbackWeb do
