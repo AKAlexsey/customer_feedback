@@ -14,7 +14,6 @@ defimpl CustomerFeedback.ParseElasticQueryResult,
     %{
       "_id" => id,
       "_index" => "feedback_documents",
-      "_score" => _,
       "_source" => %{
         "author" => author,
         "customer_id" => customer_id,

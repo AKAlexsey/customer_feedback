@@ -1,5 +1,5 @@
 defmodule CustomerFeedback.Services.FeedbackDocumentsService do
-  @defmodule """
+  @moduledoc """
   Perform pagination, filtering and ordering
   """
 
@@ -60,10 +60,19 @@ defmodule CustomerFeedback.Services.FeedbackDocumentsService do
   @doc """
   Fetch document by id.
   If document exists - return {:ok, %CustomerFeedback.CustomerInput.FeedbackDocument{}}
-  If document does not exist - return {:error, "error explanation in binary"}
+  If document does not exist - return {:error, "Document with ID <doc id> not found"}
   """
   @spec show(binary) :: {:ok, FeedbackDocument.t()} | {:error, binary}
   def show(document_id) do
-    {:ok, %FeedbackDocument{}}
+    document_id
+    |> ElasticsearchContext.query_feedback_document()
+    |> case do
+         {:ok, document_params} ->
+           {:ok, ParseElasticQueryResult.convert(%FeedbackDocument{}, document_params)}
+         {:error, %Elasticsearch.Exception{type: "document_not_found"}} ->
+           {:error, "Document with ID #{document_id} not found"}
+         {:error, %Elasticsearch.Exception{type: unexpected_error}} ->
+           {:error, "Error fetching document: #{unexpected_error}"}
+       end
   end
 end

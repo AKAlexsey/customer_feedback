@@ -1,5 +1,0 @@
-<h1>Edit Feedback document</h1>
-
-<%= render "form.html", Map.put(assigns, :action, Routes.feedback_document_path(@conn, :update, @feedback_document)) %>
-
-<span><%= link "Back", to: Routes.feedback_document_path(@conn, :index) %></span>

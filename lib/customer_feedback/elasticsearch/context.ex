@@ -6,11 +6,12 @@ defmodule CustomerFeedback.Elasticsearch.Context do
   alias CustomerFeedback.ElasticsearchCluster
   alias CustomerFeedback.CustomerInput.FeedbackDocument
 
-  import CustomerFeedback.Utils, only: [changeset_error_to_string: 1]
+  import CustomerFeedback.Utils, only: [changeset_error_to_string: 1, prefix_mandatory_char: 2]
 
   @feedback_documents_index "feedback_documents"
   @default_results_count 25
 
+  @type elastic_get_function_type :: (atom, binary, list -> Elasticsearch.response())
   @type elastic_post_function_type :: (atom, map, binary, list -> Elasticsearch.response())
 
   def default_results_count, do: @default_results_count
@@ -22,7 +23,7 @@ defmodule CustomerFeedback.Elasticsearch.Context do
   @spec create_feedback_document(map, (atom, map, binary -> Elasticsearch.response())) ::
           {:ok, binary} | {:error, binary}
   def create_feedback_document(params, post_document \\ &Elasticsearch.post_document/3) do
-    with %{valid?: true, changes: changes} = valid_changeset <-
+    with %{valid?: true, changes: changes} <-
            FeedbackDocument.changeset(%FeedbackDocument{}, params),
          feedback_document <- Map.merge(%FeedbackDocument{}, changes),
          {:ok, %{"_index" => index}} <-
@@ -76,10 +77,27 @@ defmodule CustomerFeedback.Elasticsearch.Context do
     query_documents(@feedback_documents_index, query, elastic_post_function)
   end
 
+  @doc """
+  Query feedback_document by given document _id.
+  """
+  @spec query_feedback_document(binary, elastic_get_function_type) :: {:ok, list(map)}
+  def query_feedback_document(binary_id, elastic_get_function \\ &Elasticsearch.get/3) do
+    "#{@feedback_documents_index}/_doc/#{binary_id}"
+    |> prefix_mandatory_char("/")
+    |> query_document(elastic_get_function)
+  end
+
   @spec query_documents(binary, map, elastic_post_function_type) ::
           {:ok, list(map)} | {:error, binary}
   def query_documents(index, query, elastic_post_function \\ &Elasticsearch.post/4) do
     ElasticsearchCluster
-    |> elastic_post_function.("/#{index}/_search", query, [])
+    |> elastic_post_function.(prefix_mandatory_char("#{index}/_search", "/"), query, [])
+  end
+
+  @spec query_document(binary, elastic_get_function_type) ::
+          {:ok, list(map)} | {:error, binary}
+  def query_document(document_url, elastic_get_function \\ &Elasticsearch.get/3) do
+    ElasticsearchCluster
+    |> elastic_get_function.(prefix_mandatory_char(document_url, "/"), [])
   end
 end
