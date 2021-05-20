@@ -42,6 +42,7 @@ defmodule CustomerFeedback.Services.FeedbackDocumentsService do
     |> (fn
           page when page in [0, 1] ->
             0
+
           integer_page ->
             (integer_page - 1) * @default_per_page
         end).()
@@ -61,6 +62,8 @@ defmodule CustomerFeedback.Services.FeedbackDocumentsService do
 
     %{}
     |> put_customer_id_filtration(filtration_params)
+    |> put_text_filtration(filtration_params)
+    |> put_evaluation_filtration(filtration_params)
     |> (fn query_params ->
           if query_params == %{} do
             Map.put(agg, :query, %{match_all: %{}})
@@ -76,6 +79,28 @@ defmodule CustomerFeedback.Services.FeedbackDocumentsService do
   end
 
   def put_customer_id_filtration(agg, _filtration_params), do: agg
+
+  # TODO
+  def put_text_filtration(agg, %{"text_contains" => text_contains}) do
+    agg
+    |> Map.put(:query_string, %{query: text_contains, default_field: "text"})
+  end
+
+  def put_text_filtration(agg, _filtration_params), do: agg
+
+  def put_evaluation_filtration(agg, %{
+        "evaluation_lover" => lover,
+        "evaluation_greater" => greater
+      }),
+      do: Map.put(agg, :range, %{evaluation: %{gt: greater, lt: lover}})
+
+  def put_evaluation_filtration(agg, %{"evaluation_lover" => lover}),
+    do: Map.put(agg, :range, %{evaluation: %{lt: lover}})
+
+  def put_evaluation_filtration(agg, %{"evaluation_greater" => greater}),
+    do: Map.put(agg, :range, %{evaluation: %{gt: greater}})
+
+  def put_evaluation_filtration(agg, _params), do: agg
 
   defp put_ordering(agg, _params) do
     # TODO implement
