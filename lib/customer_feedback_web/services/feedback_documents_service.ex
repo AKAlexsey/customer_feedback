@@ -9,7 +9,7 @@ defmodule CustomerFeedback.Services.FeedbackDocumentsService do
 
   import CustomerFeedback.Utils, only: [safe_to_integer: 1]
 
-  @default_per_page 5
+  @default_per_page 25
 
   @doc """
   Perform pagination, filtering and ordering for all feedback documents
@@ -25,21 +25,77 @@ defmodule CustomerFeedback.Services.FeedbackDocumentsService do
 
   @spec params_to_elastic_query(map) :: map
   defp params_to_elastic_query(params) do
-    page = Map.get(params, "page", "0")
-    from = safe_to_integer(page) * @default_per_page
+    %{}
+    |> put_size()
+    |> put_from(params)
+    |> put_filtration(params)
+    |> put_ordering(params)
+  end
 
-    %{query: %{match_all: %{}}, from: from, size: @default_per_page}
+  defp put_size(agg) do
+    put_param(agg, :size, @default_per_page)
+  end
+
+  defp put_from(agg, params) do
+    Map.get(params, "page", 0)
+    |> safe_to_integer()
+    |> (fn
+          page when page in [0, 1] ->
+            0
+          integer_page ->
+            (integer_page - 1) * @default_per_page
+        end).()
+    |> (fn from -> put_param(agg, :from, from) end).()
+  end
+
+  @permitted_filtration_params [
+    "customer_id",
+    "evaluation_greater",
+    "evaluation_lover",
+    "text_contains",
+    "author",
+    "title_contains"
+  ]
+  defp put_filtration(agg, params) do
+    {filtration_params, _} = Map.split(params, @permitted_filtration_params)
+
+    %{}
+    |> put_customer_id_filtration(filtration_params)
+    |> (fn query_params ->
+          if query_params == %{} do
+            Map.put(agg, :query, %{match_all: %{}})
+          else
+            Map.put(agg, :query, query_params)
+          end
+        end).()
+  end
+
+  def put_customer_id_filtration(agg, %{"customer_id" => customer_id}) do
+    agg
+    |> Map.put(:term, %{customer_id: customer_id})
+  end
+
+  def put_customer_id_filtration(agg, _filtration_params), do: agg
+
+  defp put_ordering(agg, _params) do
+    # TODO implement
+    agg
+  end
+
+  defp put_param(agg, name, func) do
+    Map.put(agg, name, func)
   end
 
   defp resolve_result(
-         {:ok, %{
-           "hits" => %{
-             "hits" => documents,
-             "total" => %{
-               "value" => total
-             }
-           }
-         }},
+         {:ok,
+          %{
+            "hits" => %{
+              "hits" => documents,
+              "total" => %{
+                "value" => total
+              }
+            }
+          }},
          params
        ) do
     {
@@ -67,12 +123,14 @@ defmodule CustomerFeedback.Services.FeedbackDocumentsService do
     document_id
     |> ElasticsearchContext.query_feedback_document()
     |> case do
-         {:ok, document_params} ->
-           {:ok, ParseElasticQueryResult.convert(%FeedbackDocument{}, document_params)}
-         {:error, %Elasticsearch.Exception{type: "document_not_found"}} ->
-           {:error, "Document with ID #{document_id} not found"}
-         {:error, %Elasticsearch.Exception{type: unexpected_error}} ->
-           {:error, "Error fetching document: #{unexpected_error}"}
-       end
+      {:ok, document_params} ->
+        {:ok, ParseElasticQueryResult.convert(%FeedbackDocument{}, document_params)}
+
+      {:error, %Elasticsearch.Exception{type: "document_not_found"}} ->
+        {:error, "Document with ID #{document_id} not found"}
+
+      {:error, %Elasticsearch.Exception{type: unexpected_error}} ->
+        {:error, "Error fetching document: #{unexpected_error}"}
+    end
   end
 end

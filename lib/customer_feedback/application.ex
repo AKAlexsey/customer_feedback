@@ -7,7 +7,7 @@ defmodule CustomerFeedback.Application do
     children = [
       CustomerFeedback.Repo,
       CustomerFeedbackWeb.Telemetry,
-      {Phoenix.PubSub, name: CustomerFeedback.PubSub}, # commented because does not used for a while.
+      {Phoenix.PubSub, name: CustomerFeedback.PubSub},
       CustomerFeedbackWeb.Endpoint,
       CustomerFeedback.ElasticsearchCluster,
       {CustomerFeedback.FeedbackGateway.Broadway, []},
