@@ -27,5 +27,6 @@ defmodule CustomerFeedbackWeb.CustomerFeedbackController do
   defp binary_present(value) when is_binary(value) do
     value != ""
   end
+
   defp binary_present(_), do: false
 end

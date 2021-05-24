@@ -30,6 +30,7 @@ defmodule CustomerFeedback.Utils do
 
   @spec safe_to_integer(integer | binary) :: integer
   def safe_to_integer(value) when is_integer(value), do: value
+
   def safe_to_integer(value) when is_binary(value) do
     {integer_value, _} = Integer.parse(value)
     integer_value
@@ -38,14 +39,18 @@ defmodule CustomerFeedback.Utils do
   @spec prefix_mandatory_char(binary, binary) :: binary
   def prefix_mandatory_char(prefixed_string, prefixed_char) do
     with value when value != "" <- prefixed_string,
-         {:prefixing_char_valid, true} <- {:prefixing_char_valid, String.length(prefixed_char) == 1},
-         {:need_prefix_string, true} <- {:need_prefix_string, String.slice(prefixed_string, 0, 1) != prefixed_char} do
+         {:prefixing_char_valid, true} <-
+           {:prefixing_char_valid, String.length(prefixed_char) == 1},
+         {:need_prefix_string, true} <-
+           {:need_prefix_string, String.slice(prefixed_string, 0, 1) != prefixed_char} do
       "#{prefixed_char}#{prefixed_string}"
     else
       "" ->
         raise ArgumentError, message: "First argument must contain at least one character"
+
       {:prefixing_char_valid, false} ->
         raise ArgumentError, message: "Second argument must be one character exactly"
+
       {:need_prefix_string, false} ->
         prefixed_string
     end

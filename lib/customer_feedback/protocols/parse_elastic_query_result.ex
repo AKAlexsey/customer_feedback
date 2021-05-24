@@ -9,7 +9,6 @@ end
 
 defimpl CustomerFeedback.ParseElasticQueryResult,
   for: CustomerFeedback.CustomerInput.FeedbackDocument do
-
   def convert(empty_struct, params) do
     %{
       "_id" => id,

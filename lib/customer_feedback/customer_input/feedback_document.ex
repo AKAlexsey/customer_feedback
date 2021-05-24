@@ -27,8 +27,8 @@ defmodule CustomerFeedback.CustomerInput.FeedbackDocument do
     |> cast(attrs, @cast_fields)
     |> validate_required(@required_fields)
     |> validate_number(:evaluation,
-         greater_than_or_equal_to: @minimum_evaluation,
-         less_than_or_equal_to: @maximum_evaluation
-       )
+      greater_than_or_equal_to: @minimum_evaluation,
+      less_than_or_equal_to: @maximum_evaluation
+    )
   end
 end

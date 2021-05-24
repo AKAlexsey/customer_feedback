@@ -28,3 +28,5 @@ To run testing, you can run:
 ```
 k6 run --vus 10 --rps 200 --duration 10s ./load_testing/test_feedbacks.js
 ```
+
+

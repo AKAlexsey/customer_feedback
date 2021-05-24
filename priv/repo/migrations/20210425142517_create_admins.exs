@@ -7,6 +7,5 @@ defmodule CustomerFeedback.Repo.Migrations.CreateAdmins do
 
       timestamps()
     end
-
   end
 end

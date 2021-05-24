@@ -75,6 +75,7 @@ defmodule CustomerFeedbackWeb.AdminControllerTest do
     test "deletes chosen admin", %{conn: conn, admin: admin} do
       conn = delete(conn, Routes.admin_path(conn, :delete, admin))
       assert redirected_to(conn) == Routes.admin_path(conn, :index)
+
       assert_error_sent 404, fn ->
         get(conn, Routes.admin_path(conn, :show, admin))
       end

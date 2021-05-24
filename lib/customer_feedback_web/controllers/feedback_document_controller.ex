@@ -12,12 +12,13 @@ defmodule CustomerFeedbackWeb.FeedbackDocumentController do
   def show(conn, %{"id" => id}) do
     FeedbackDocumentsService.show(id)
     |> case do
-         {:ok, feedback_document} ->
-           render(conn, "show.html", feedback_document: feedback_document)
-         {:error, reason} ->
-           conn
-           |> put_flash(:error, reason)
-           |> redirect(to: Routes.feedback_document_path(conn, :index))
-       end
+      {:ok, feedback_document} ->
+        render(conn, "show.html", feedback_document: feedback_document)
+
+      {:error, reason} ->
+        conn
+        |> put_flash(:error, reason)
+        |> redirect(to: Routes.feedback_document_path(conn, :index))
+    end
   end
 end

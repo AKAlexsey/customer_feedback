@@ -1,6 +1,7 @@
 defimpl Elasticsearch.Document, for: CustomerFeedback.CustomerInput.FeedbackDocument do
   def id(feedback_document), do: feedback_document.id
   def routing(_), do: false
+
   def encode(feedback_document) do
     %{
       title: feedback_document.title,

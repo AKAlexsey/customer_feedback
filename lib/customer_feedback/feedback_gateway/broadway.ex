@@ -33,9 +33,10 @@ defmodule CustomerFeedback.FeedbackGateway.Broadway do
   @impl true
   def handle_message(_, %{data: %{data: raw_feedback_document}} = message, _context) do
     # TODO Add logging in case of invalid messages
-    result = raw_feedback_document
-    |> Jason.decode!()
-    |> ElasticsearchContext.create_feedback_document()
+    result =
+      raw_feedback_document
+      |> Jason.decode!()
+      |> ElasticsearchContext.create_feedback_document()
 
     message
   end
