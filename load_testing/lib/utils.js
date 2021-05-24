@@ -13,7 +13,7 @@ const PRODUCTS = [
     'Ferrary', 'New car'
 ]
 
-const REPLACE_SYMBOL = '$';
+const REPLACE_SYMBOL = '<replace symbol>';
 
 const FEEDBACK = [
     {
@@ -71,17 +71,21 @@ const FEEDBACK = [
 const DEFAULT_HOST = 'localhost';
 const DEFAULT_PORT = 4000;
 
-const BASIC_PRODUCT_URL = "https://amaczon.com/sale"
+const BASIC_PRODUCT_URL = "https://amazon.com/sale"
 
 const PERMITTED_CUSTOMERS = ["customer_1", "customer_2", "customer_3", "customer_4", "customer_5"];
 const CUSTOMER_TOKEN = "secret_token";
 
 export function getFeedbackContent(feedbackObject, productName) {
     const { evaluation, title, text } = feedbackObject;
+    const replaceRegex = new RegExp(REPLACE_SYMBOL, 'g');
+    const updatedTitle = title.replace(replaceRegex, productName);
+    const updatedText = text.replace(replaceRegex, productName);
+
     return {
         evaluation,
-        title: title.replace(/${REPLACE_SYMBOL}/g, productName),
-        text: text.replace(/${REPLACE_SYMBOL}/g, productName)
+        title: updatedTitle,
+        text: updatedText
     }
 }
 

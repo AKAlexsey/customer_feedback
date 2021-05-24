@@ -16,12 +16,12 @@ defmodule CustomerFeedback.FeedbackGateway.Broadway do
         concurrency: 1,
         transformer: {__MODULE__, :transform, []},
         rate_limiting: [
-          allowed_messages: 60,
+          allowed_messages: 1000,
           interval: 60_000
         ]
       ],
       processors: [
-        default: [concurrency: 5]
+        default: [concurrency: 20]
       ]
     )
   end
@@ -32,14 +32,10 @@ defmodule CustomerFeedback.FeedbackGateway.Broadway do
   #
   @impl true
   def handle_message(_, %{data: %{data: raw_feedback_document}} = message, _context) do
-    IO.puts("!!! processor message\n#{inspect(message)}")
-
     # TODO Add logging in case of invalid messages
     result = raw_feedback_document
     |> Jason.decode!()
     |> ElasticsearchContext.create_feedback_document()
-
-    IO.puts("!!! insertion result #{inspect(result)}")
 
     message
   end

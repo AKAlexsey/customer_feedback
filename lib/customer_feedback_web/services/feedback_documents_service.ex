@@ -80,10 +80,9 @@ defmodule CustomerFeedback.Services.FeedbackDocumentsService do
 
   def put_customer_id_filtration(agg, _filtration_params), do: agg
 
-  # TODO
   def put_text_filtration(agg, %{"text_contains" => text_contains}) do
     agg
-    |> Map.put(:query_string, %{query: text_contains, default_field: "text"})
+    |> Map.put(:query_string, %{query: "text:\"#{text_contains}\""})
   end
 
   def put_text_filtration(agg, _filtration_params), do: agg

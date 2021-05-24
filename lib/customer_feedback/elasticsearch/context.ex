@@ -87,15 +87,26 @@ defmodule CustomerFeedback.Elasticsearch.Context do
     |> query_document(elastic_get_function)
   end
 
-  @spec query_documents(binary, map, elastic_post_function_type) ::
-          {:ok, list(map)} | {:error, binary}
+  @doc """
+  Query feedback_document by given document _id.
+  """
+  @spec count_feedback_documents(elastic_get_function_type) :: Elasticsearch.response()
+  def count_feedback_documents(elastic_get_function \\ &Elasticsearch.get/3) do
+    count_index(@feedback_documents_index, elastic_get_function)
+  end
+
+  @spec count_index(binary, elastic_get_function_type) :: Elasticsearch.response()
+  def count_index(index, elastic_get_function \\ &Elasticsearch.get/3) do
+    query_document(prefix_mandatory_char("#{index}/_count", "/"), elastic_get_function)
+  end
+
+  @spec query_documents(binary, map, elastic_post_function_type) :: Elasticsearch.response()
   def query_documents(index, query, elastic_post_function \\ &Elasticsearch.post/4) do
     ElasticsearchCluster
     |> elastic_post_function.(prefix_mandatory_char("#{index}/_search", "/"), query, [])
   end
 
-  @spec query_document(binary, elastic_get_function_type) ::
-          {:ok, list(map)} | {:error, binary}
+  @spec query_document(binary, elastic_get_function_type) :: Elasticsearch.response()
   def query_document(document_url, elastic_get_function \\ &Elasticsearch.get/3) do
     ElasticsearchCluster
     |> elastic_get_function.(prefix_mandatory_char(document_url, "/"), [])

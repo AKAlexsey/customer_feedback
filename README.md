@@ -17,3 +17,14 @@ Credentials: guest:guest
 Located at https://localhost:9200/
 
 
+### Load Testing
+
+For testng purposes and filling database with random data, there was created the script,
+that full database with fake data.
+As performance testing framework - used k6.
+
+To run testing, you can run:
+
+```
+k6 run --vus 10 --rps 200 --duration 10s ./load_testing/test_feedbacks.js
+```
