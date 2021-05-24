@@ -37,11 +37,10 @@ defmodule CustomerFeedbackWeb.Authorization.ApiPlug do
     end
   end
 
+  @permitted_customers ["customer_1", "customer_2", "customer_3", "customer_4", "customer_5"]
   @spec verify_customer_token(binary, binary) :: :ok | {:error, :customer_token_invalid}
   defp verify_customer_token(customer_id, customer_token) do
-    # TODO implement verification using some database. Let use pass just token. Customer ID should be found here
-    # Authorization: Basic Y3VzdG9tZXJfaWQ6c2VjcmV0X3Rva2Vu
-    if customer_id == "customer_id" && customer_token == "secret_token" do
+    if customer_id in @permitted_customers && customer_token == "secret_token" do
       :ok
     else
       {:error, :customer_token_invalid}
