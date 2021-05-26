@@ -25,4 +25,9 @@ config :customer_feedback, CustomerFeedback.ElasticsearchCluster,
   api: CustomerFeedback.ElasticsearchApiMock
 
 config :customer_feedback, CustomerFeedback.FeedbackGateway.Broadway,
-  queue_name: "customer_feedback_queue"
+  queue_name: "customer_feedback_queue",
+  allowed_messages: 100,
+  interval_allowed_messages: 60_000,
+  processors_concurrency: 1,
+  elastic_batchers_concurrency: 1,
+  elastic_batch_size: 1

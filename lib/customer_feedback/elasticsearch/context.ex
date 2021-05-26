@@ -6,7 +6,7 @@ defmodule CustomerFeedback.Elasticsearch.Context do
   alias CustomerFeedback.ElasticsearchCluster
   alias CustomerFeedback.CustomerInput.FeedbackDocument
 
-  import CustomerFeedback.Utils, only: [changeset_error_to_string: 1, prefix_mandatory_char: 2]
+  import CustomerFeedback.Utils, only: [prefix_mandatory_char: 2]
 
   @feedback_documents_index "feedback_documents"
   @default_results_count 25
@@ -23,9 +23,7 @@ defmodule CustomerFeedback.Elasticsearch.Context do
   @spec create_feedback_document(map, (atom, map, binary -> Elasticsearch.response())) ::
           {:ok, binary} | {:error, binary}
   def create_feedback_document(params, post_document \\ &Elasticsearch.post_document/3) do
-    with %{valid?: true, changes: changes} <-
-           FeedbackDocument.changeset(%FeedbackDocument{}, params),
-         feedback_document <- Map.merge(%FeedbackDocument{}, changes),
+    with {:ok, feedback_document} <- FeedbackDocument.validate(params),
          {:ok, %{"_index" => index}} <-
            post_document.(ElasticsearchCluster, feedback_document, @feedback_documents_index) do
       {:ok, index}
@@ -33,9 +31,63 @@ defmodule CustomerFeedback.Elasticsearch.Context do
       {:error, %Elasticsearch.Exception{message: message}} ->
         {:error, message}
 
-      %{valid?: false} = error_changeset ->
-        {:error, changeset_error_to_string(error_changeset)}
+      {:error, reason} when is_binary(reason) ->
+        {:error, reason}
     end
+  end
+
+  @doc """
+  Validate document params and if they are valid - create document in Elasticsearch
+  If params invalid or there are some error during saving the document - returns error
+  """
+  @spec create_feedback_documents_in_batch(
+          list(map),
+          (atom, map, binary, list -> Elasticsearch.response())
+        ) ::
+          {:ok, binary} | {:error, binary}
+  def create_feedback_documents_in_batch(
+        feedback_documents_params,
+        post_function \\ &Elasticsearch.post/4
+      ) do
+    with {success, _failed} when success != [] <- validate_all_docs(feedback_documents_params),
+         compiled_batch <- compile_documents_batch(success),
+         bulk_url <- prefix_mandatory_char("#{@feedback_documents_index}/_bulk", "/"),
+         {:ok, %{}} <-
+           post_function.(ElasticsearchCluster, bulk_url, compiled_batch, []) do
+      {:ok, "OK"}
+    else
+      {:error, %Elasticsearch.Exception{message: message}} ->
+        {:error, message}
+
+      {[], failed} ->
+        {:error, "Document validations list:\n#{Enum.join(failed, "\n")}"}
+    end
+  end
+
+  defp validate_all_docs(feedback_documents_params) do
+    feedback_documents_params
+    |> Enum.reduce({[], []}, fn params, {success, failed} ->
+      FeedbackDocument.validate(params)
+      |> case do
+        {:ok, feedback_document} ->
+          {[feedback_document] ++ success, failed}
+
+        {:error, reason} ->
+          {success, [reason] ++ failed}
+      end
+    end)
+  end
+
+  defp compile_documents_batch(feedback_documents) do
+    feedback_documents
+    |> Enum.map(fn feedback_document ->
+      Elasticsearch.Index.Bulk.encode!(
+        ElasticsearchCluster,
+        feedback_document,
+        @feedback_documents_index
+      )
+    end)
+    |> Enum.join("")
   end
 
   @doc """

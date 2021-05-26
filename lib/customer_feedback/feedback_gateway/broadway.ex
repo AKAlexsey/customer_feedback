@@ -5,6 +5,17 @@ defmodule CustomerFeedback.FeedbackGateway.Broadway do
   alias CustomerFeedback.Elasticsearch.Context, as: ElasticsearchContext
 
   @queue_name Application.get_env(:customer_feedback, __MODULE__)[:queue_name]
+  @allowed_messages Application.get_env(:customer_feedback, __MODULE__)[:allowed_messages]
+  @interval_allowed_messages Application.get_env(:customer_feedback, __MODULE__)[
+                               :interval_allowed_messages
+                             ]
+  @processors_concurrency Application.get_env(:customer_feedback, __MODULE__)[
+                            :processors_concurrency
+                          ]
+  @elastic_batchers_concurrency Application.get_env(:customer_feedback, __MODULE__)[
+                                  :elastic_batchers_concurrency
+                                ]
+  @elastic_batch_size Application.get_env(:customer_feedback, __MODULE__)[:elastic_batch_size]
 
   # Callbacks
   def start_link(_opts) do
@@ -21,12 +32,15 @@ defmodule CustomerFeedback.FeedbackGateway.Broadway do
         concurrency: 1,
         transformer: {__MODULE__, :transform, []},
         rate_limiting: [
-          allowed_messages: 1000,
-          interval: 60_000
+          allowed_messages: @allowed_messages,
+          interval: @interval_allowed_messages
         ]
       ],
       processors: [
-        default: [concurrency: 20]
+        default: [concurrency: @processors_concurrency]
+      ],
+      batchers: [
+        elastic: [concurrency: @elastic_batchers_concurrency, batch_size: @elastic_batch_size]
       ]
     )
   end
@@ -36,14 +50,16 @@ defmodule CustomerFeedback.FeedbackGateway.Broadway do
   # Elasticsearch.post_document(CustomerFeedback.ElasticsearchCluster, %CustomerFeedback.CustomerInput.FeedbackDocument{title: "Example", author: "Willie wonka", evaluation: 9}, "feedback_documents")
   #
   @impl true
-  def handle_message(_, %{data: %{data: raw_feedback_document}} = message, _context) do
+  def handle_message(_, message, _context) do
     # TODO Add logging in case of invalid messages
-    result =
-      raw_feedback_document
-      |> Jason.decode!()
-      |> ElasticsearchContext.create_feedback_document()
+    # Old before batching version of inserting message
+    # result =
+    #   raw_feedback_document
+    #   |> Jason.decode!()
+    #   |> ElasticsearchContext.create_feedback_document()
 
     message
+    |> Broadway.Message.put_batcher(:elastic)
   end
 
   def transform(event, _opts) do
@@ -55,5 +71,18 @@ defmodule CustomerFeedback.FeedbackGateway.Broadway do
 
   def ack(:ack_id, _successful, _failed) do
     :ok
+  end
+
+  @impl true
+  def handle_batch(:elastic, messages, _batch_info, _context) do
+    # TODO working only after fixing Elasticsearch.Index.Bulk fix
+    # Replaced header/4 function second argument "create" to "index"
+    messages
+    |> Enum.map(fn %{data: %{data: raw_feedback_document}} ->
+      Jason.decode!(raw_feedback_document)
+    end)
+    |> ElasticsearchContext.create_feedback_documents_in_batch()
+
+    messages
   end
 end

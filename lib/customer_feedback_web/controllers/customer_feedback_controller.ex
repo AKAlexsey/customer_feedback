@@ -23,10 +23,4 @@ defmodule CustomerFeedbackWeb.CustomerFeedbackController do
       send_resp(conn, 422, "Request invalid")
     end
   end
-
-  defp binary_present(value) when is_binary(value) do
-    value != ""
-  end
-
-  defp binary_present(_), do: false
 end
