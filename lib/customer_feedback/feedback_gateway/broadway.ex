@@ -12,7 +12,12 @@ defmodule CustomerFeedback.FeedbackGateway.Broadway do
       __MODULE__,
       name: __MODULE__,
       producer: [
-        module: {BroadwayRabbitMQ.Producer, queue: @queue_name},
+        module:
+          {BroadwayRabbitMQ.Producer,
+           queue: @queue_name,
+           on_success: :ack,
+           on_failure: :reject_and_requeue_once,
+           consume_options: [no_ack: true]},
         concurrency: 1,
         transformer: {__MODULE__, :transform, []},
         rate_limiting: [

@@ -1,5 +1,8 @@
 <h1>Listing Feedback documents</h1>
 
+<div>
+  Pagination: <%= inspect(@pagination, pretty: true) %>
+</div>
 <table>
   <thead>
     <tr>
