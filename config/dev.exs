@@ -25,10 +25,10 @@ config :customer_feedback, CustomerFeedbackWeb.Endpoint,
 
 config :customer_feedback, CustomerFeedback.FeedbackGateway.Broadway,
   queue_name: "customer_feedback_queue",
-  allowed_messages: 1000,
+  allowed_messages: 200,
   interval_allowed_messages: 60_000,
-  processors_concurrency: 2,
-  elastic_batchers_concurrency: 2,
+  processors_concurrency: 5,
+  elastic_batchers_concurrency: 5,
   elastic_batch_size: 5
 
 # ## SSL Support
