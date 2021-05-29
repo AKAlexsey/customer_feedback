@@ -9,10 +9,12 @@ defmodule CustomerFeedbackWeb.Authorization.ApiPlug do
   @impl true
   def call(%{req_headers: request_headers_list} = conn, _opts) do
     # Basic Y3VzdG9tZXJfMTpzZWNyZXRfdG9rZW4=
+    # Customer1 Basic Y3VzdG9tZXJfMTpzZWNyZXRfdG9rZW4=
+    # Customer2 Basic Y3VzdG9tZXJfMjpzZWNyZXRfdG9rZW4=
     with {:ok, {customer_id, customer_token}} <- fetch_customer_credentials(request_headers_list),
          :ok <- verify_customer_token(customer_id, customer_token) do
       conn
-      |> put_session(:customer_id, "customer_id_#{:rand.uniform(3)}")
+      |> put_session(:customer_id, customer_id)
     else
       {:error, reason} ->
         conn

@@ -46,13 +46,14 @@ defmodule CustomerFeedback.FeedbackGateway.Broadway do
           partition_by: &partition/1
         ]
       ],
-      context: "Could be anything, even function. Passed as third argument to the handle_message and handle_batch"
+      context:
+        "Could be anything, even function. Passed as third argument to the handle_message and handle_batch"
     )
   end
 
   defp partition(%{data: %{"customer_id" => customer_id}} = message) do
-      {customer_key, _} = Integer.parse(String.at(customer_id, -1))
-      customer_key
+    {customer_key, _} = Integer.parse(String.at(customer_id, -1))
+    customer_key
   end
 
   # Convert input data into Broadway.Message format
@@ -76,7 +77,7 @@ defmodule CustomerFeedback.FeedbackGateway.Broadway do
 
     message
     |> Broadway.Message.put_batcher(:elastic)
-    |> Broadway.Message.update_data(& Jason.decode!(&1.data))
+    |> Broadway.Message.update_data(&Jason.decode!(&1.data))
   end
 
   # Invoked after handle_message if batching is absent
@@ -90,7 +91,7 @@ defmodule CustomerFeedback.FeedbackGateway.Broadway do
     # TODO working only after fixing Elasticsearch.Index.Bulk fix
     # Replaced header/4 function second argument "create" to "index"
     messages
-    |> Enum.map(&(&1.data))
+    |> Enum.map(& &1.data)
     |> ElasticsearchContext.create_feedback_documents_in_batch()
 
     messages
