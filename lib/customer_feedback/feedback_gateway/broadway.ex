@@ -51,7 +51,7 @@ defmodule CustomerFeedback.FeedbackGateway.Broadway do
     )
   end
 
-  defp partition(%{data: %{"customer_id" => customer_id}} = message) do
+  defp partition(%{data: %{"customer_id" => customer_id}}) do
     {customer_key, _} = Integer.parse(String.at(customer_id, -1))
     customer_key
   end
@@ -66,7 +66,7 @@ defmodule CustomerFeedback.FeedbackGateway.Broadway do
   end
 
   @impl true
-  def handle_message(_, message, context) do
+  def handle_message(_, message, _context) do
     # Dynamic batching example. Requires handle_batch with according pattern matching in batch_info
     # decoded = Jason.decode!(message.data.data)
     # {evaluation, _} = Integer.parse(decoded["evaluation"])
@@ -87,7 +87,7 @@ defmodule CustomerFeedback.FeedbackGateway.Broadway do
   end
 
   @impl true
-  def handle_batch(:elastic, messages, batch_info, context) do
+  def handle_batch(:elastic, messages, _batch_info, _context) do
     # TODO working only after fixing Elasticsearch.Index.Bulk fix
     # Replaced header/4 function second argument "create" to "index"
     messages
@@ -99,6 +99,7 @@ defmodule CustomerFeedback.FeedbackGateway.Broadway do
 
   # Invoked after handle_message or handle_batch in case when
   # batching is turned off or on accordingly
+  @impl true
   def handle_failed(messages, _context) do
     messages
   end

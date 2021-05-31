@@ -12,11 +12,11 @@ defmodule CustomerFeedback.FeedbackGateway.JsonProducer do
   end
 
   def init(_) do
-    {:producer, :queue.new()}
+    {:producer, :queue.new(), dispatcher: GenStage.DemandDispatcher}
   end
 
   def handle_cast({:push_element, customer_id, feedback}, queue) do
-    {:noreply, :queue.in({customer_id, feedback}, queue)}
+    {:noreply, [], :queue.in({customer_id, feedback}, queue)}
   end
 
   def handle_demand(_, queue) do

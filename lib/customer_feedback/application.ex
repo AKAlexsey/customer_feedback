@@ -11,7 +11,8 @@ defmodule CustomerFeedback.Application do
       CustomerFeedbackWeb.Endpoint,
       CustomerFeedback.ElasticsearchCluster,
       {CustomerFeedback.FeedbackGateway.Broadway, []},
-      CustomerFeedback.FeedbackGateway.RabbitProducer
+      CustomerFeedback.FeedbackGateway.RabbitProducer,
+      CustomerFeedback.FeedbackGateway.JsonSupervisor
     ]
 
     opts = [strategy: :one_for_one, name: CustomerFeedback.Supervisor]

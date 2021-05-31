@@ -75,3 +75,7 @@ config :phoenix, :stacktrace_depth, 20
 
 # Initialize plugs at runtime for faster development compilation
 config :phoenix, :plug_init_mode, :runtime
+
+config :customer_feedback, CustomerFeedback.FeedbackGateway.JsonConverter,
+  workers_count: 5,
+  demand_interval_milliseconds: 1000
