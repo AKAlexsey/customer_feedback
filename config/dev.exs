@@ -79,3 +79,6 @@ config :phoenix, :plug_init_mode, :runtime
 config :customer_feedback, CustomerFeedback.FeedbackGateway.JsonConverter,
   workers_count: 20,
   demand_interval_milliseconds: 10
+
+config :customer_feedback, CustomerFeedback.FeedbackGateway.ConverterBroadway,
+  processors_count: 10

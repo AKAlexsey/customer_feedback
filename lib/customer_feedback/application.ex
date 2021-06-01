@@ -12,7 +12,8 @@ defmodule CustomerFeedback.Application do
       CustomerFeedback.ElasticsearchCluster,
       {CustomerFeedback.FeedbackGateway.Broadway, []},
       CustomerFeedback.FeedbackGateway.RabbitClient,
-      CustomerFeedback.FeedbackGateway.JsonSupervisor
+      CustomerFeedback.FeedbackGateway.JsonSupervisor,
+      CustomerFeedback.FeedbackGateway.ConverterBroadway
     ]
 
     opts = [strategy: :one_for_one, name: CustomerFeedback.Supervisor]

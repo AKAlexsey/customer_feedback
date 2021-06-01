@@ -6,13 +6,13 @@ defmodule CustomerFeedbackWeb.CustomerFeedbackController do
   plug :fetch_session
   plug CustomerFeedbackWeb.Authorization.ApiPlug
 
-  alias CustomerFeedback.FeedbackGateway.JsonProducer
+  alias CustomerFeedback.FeedbackGateway.ConverterBroadway
 
   def create(conn, feedback_params) do
     customer_id = Plug.Conn.get_session(conn, "customer_id")
 
     if map_size(feedback_params) > 0 do
-      JsonProducer.push_element(customer_id, feedback_params)
+      ConverterBroadway.push_element(customer_id, feedback_params)
 
       send_resp(conn, 200, "")
     else

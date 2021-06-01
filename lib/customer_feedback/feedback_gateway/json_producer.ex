@@ -1,5 +1,10 @@
 defmodule CustomerFeedback.FeedbackGateway.JsonProducer do
-  @moduledoc "Stores newly coming messages"
+  @moduledoc """
+  Stores newly coming messages
+  >>> Legacy project before implementing: CustomerFeedback.FeedbackGateway.ConverterBroadway
+  >>> But still left just for example.
+  >>> Will be replaced in CustomerFeedbackWeb.CustomerFeedbackController by broadway alternative
+  """
 
   use GenServer
 

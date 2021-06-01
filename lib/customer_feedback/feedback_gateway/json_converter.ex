@@ -6,7 +6,9 @@ defmodule CustomerFeedback.FeedbackGateway.JsonConverter do
   use GenServer
 
   @demand_atom :ask_demand
-  @demand_interval_milliseconds Application.get_env(:customer_feedback, __MODULE__)[:demand_interval_milliseconds]
+  @demand_interval_milliseconds Application.get_env(:customer_feedback, __MODULE__)[
+                                  :demand_interval_milliseconds
+                                ]
 
   alias CustomerFeedback.FeedbackGateway.JsonProducer
   alias CustomerFeedback.FeedbackGateway.RabbitClient
@@ -47,12 +49,13 @@ defmodule CustomerFeedback.FeedbackGateway.JsonConverter do
   defp get_process_name(opts) do
     Keyword.get(opts, :id)
     |> case do
-         nil ->
-           raise ArgumentError, "Opts must contain :id. But it's absent. Given opts: #{inspect(opts)}"
-         id ->
-           String.to_atom("#{__MODULE__}_#{id}")
+      nil ->
+        raise ArgumentError,
+              "Opts must contain :id. But it's absent. Given opts: #{inspect(opts)}"
 
-       end
+      id ->
+        String.to_atom("#{__MODULE__}_#{id}")
+    end
   end
 
   defp schedule_demand do
