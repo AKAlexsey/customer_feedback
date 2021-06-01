@@ -1,4 +1,4 @@
-defmodule CustomerFeedback.FeedbackGateway.RabbitProducer do
+defmodule CustomerFeedback.FeedbackGateway.RabbitClient do
   @moduledoc """
   Put data into rabbit MQ queue
   """

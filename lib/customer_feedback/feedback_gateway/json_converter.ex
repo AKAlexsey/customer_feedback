@@ -6,9 +6,10 @@ defmodule CustomerFeedback.FeedbackGateway.JsonConverter do
   use GenServer
 
   @demand_atom :ask_demand
+  @demand_interval_milliseconds Application.get_env(:customer_feedback, __MODULE__)[:demand_interval_milliseconds]
 
   alias CustomerFeedback.FeedbackGateway.JsonProducer
-  alias CustomerFeedback.FeedbackGateway.RabbitProducer
+  alias CustomerFeedback.FeedbackGateway.RabbitClient
 
   def push_element(customer_id, feedback) when is_binary(customer_id) and is_map(feedback) do
     GenStage.cast(__MODULE__, {:push_element, customer_id, feedback})
@@ -27,7 +28,7 @@ defmodule CustomerFeedback.FeedbackGateway.JsonConverter do
     feedback_params
     |> Map.put("customer_id", customer_id)
     |> Jason.encode!()
-    |> RabbitProducer.put_message()
+    |> RabbitClient.put_message()
 
     {:noreply, [], state}
   end
@@ -55,6 +56,6 @@ defmodule CustomerFeedback.FeedbackGateway.JsonConverter do
   end
 
   defp schedule_demand do
-    Process.send_after(self(), @demand_atom, 1000)
+    Process.send_after(self(), @demand_atom, @demand_interval_milliseconds)
   end
 end

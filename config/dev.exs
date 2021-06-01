@@ -25,10 +25,10 @@ config :customer_feedback, CustomerFeedbackWeb.Endpoint,
 
 config :customer_feedback, CustomerFeedback.FeedbackGateway.Broadway,
   queue_name: "customer_feedback_queue",
-  allowed_messages: 200,
+  allowed_messages: 4000,
   interval_allowed_messages: 60_000,
-  processors_concurrency: 5,
-  elastic_batchers_concurrency: 5,
+  processors_concurrency: 10,
+  elastic_batchers_concurrency: 10,
   elastic_batch_size: 5
 
 # ## SSL Support
@@ -77,5 +77,5 @@ config :phoenix, :stacktrace_depth, 20
 config :phoenix, :plug_init_mode, :runtime
 
 config :customer_feedback, CustomerFeedback.FeedbackGateway.JsonConverter,
-  workers_count: 5,
-  demand_interval_milliseconds: 1000
+  workers_count: 20,
+  demand_interval_milliseconds: 10

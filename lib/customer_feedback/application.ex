@@ -11,7 +11,7 @@ defmodule CustomerFeedback.Application do
       CustomerFeedbackWeb.Endpoint,
       CustomerFeedback.ElasticsearchCluster,
       {CustomerFeedback.FeedbackGateway.Broadway, []},
-      CustomerFeedback.FeedbackGateway.RabbitProducer,
+      CustomerFeedback.FeedbackGateway.RabbitClient,
       CustomerFeedback.FeedbackGateway.JsonSupervisor
     ]
 
