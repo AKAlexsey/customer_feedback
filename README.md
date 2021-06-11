@@ -16,6 +16,13 @@ Credentials: guest:guest
 
 Located at https://localhost:9200/
 
+### Create index for elasticsearch
+
+To create necessary index please built in Elasticsearch mix task
+
+```
+mix elasticsearch.build feedback_documents --cluster CustomerFeedback.ElasticsearchCluster
+```
 
 ### Load Testing
 
@@ -28,5 +35,4 @@ To run testing, you can run:
 ```
 k6 run --vus 10 --rps 200 --duration 10s ./load_testing/test_feedbacks.js
 ```
-
 
