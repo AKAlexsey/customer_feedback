@@ -5,6 +5,30 @@ Perform
 * Expose Admin interface to watch customer feedbacks
 * Expose User interface for managing exact company feedbacks and interface
 
+# Project setup
+
+Prepare application itself
+
+```bash
+asdf install
+mix setup
+```
+
+Run related services. Run in the separated terminal
+
+```
+docker-compose up
+```
+
+Run server itself
+
+```
+mix phx.server
+```
+
+Now you can visit the server http://localhost:4000/
+
+
 
 ## External services
 
