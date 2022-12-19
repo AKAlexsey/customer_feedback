@@ -43,7 +43,7 @@ config :customer_feedback,
        indexes: %{
          feedback_documents: %{
            settings:
-             "/home/carefreeslacker/RubymineProjects/customer_feedback/elastic_configs/feedback_documents.json",
+             "#{File.cwd!()}/elastic_configs/feedback_documents.json",
            store: CustomerFeedback.ElasticsearchStore,
            sources: [CustomerFeedback.CustomerInput.FeedbackDocument],
            bulk_page_size: 5000,

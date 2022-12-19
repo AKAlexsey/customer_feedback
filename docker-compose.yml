@@ -6,9 +6,6 @@ services:
     ports:
       - 5672:5672
       - 15672:15672
-    volumes:
-      - ~/customer_feedback/rabbitmq/data/:/var/lib/rabbitmq/
-      - ~/customer_feedback/rabbitmq/log/:/var/log/rabbitmq
     networks:
       - rabbitmq_net
 

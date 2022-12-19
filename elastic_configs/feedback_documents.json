@@ -1,3 +1,31 @@
 {
-
+  "settings": {
+    "number_of_replicas": 1,
+    "number_of_shards": 1
+  },
+  "mappings": {
+    "properties": {
+      "id": {
+        "type": "integer"
+      },
+      "title": {
+        "type": "text"
+      },
+      "author": {
+        "type": "text"
+      },
+      "text": {
+        "type": "text"
+      },
+      "product_url": {
+        "type": "text"
+      },
+      "evaluation": {
+        "type": "text"
+      },
+      "customer_id": {
+        "type": "text"
+      }
+    }
+  }
 }

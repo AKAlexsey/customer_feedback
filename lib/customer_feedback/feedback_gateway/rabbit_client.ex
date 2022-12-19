@@ -37,9 +37,7 @@ defmodule CustomerFeedback.FeedbackGateway.RabbitClient do
     {:noreply, state}
   end
 
-  # TODO some why does not work
   def terminate(reason, %{connection: connection}) do
-    IO.puts("!!! closing connection #{inspect(connection)}, reason: #{reason}")
     AMQP.Connection.close(connection)
 
     reason

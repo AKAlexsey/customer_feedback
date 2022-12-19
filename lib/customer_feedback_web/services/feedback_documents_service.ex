@@ -102,7 +102,6 @@ defmodule CustomerFeedback.Services.FeedbackDocumentsService do
   def put_evaluation_filtration(agg, _params), do: agg
 
   defp put_ordering(agg, _params) do
-    # TODO implement
     agg
   end
 

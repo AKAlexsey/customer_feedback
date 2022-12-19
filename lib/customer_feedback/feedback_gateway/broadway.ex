@@ -88,8 +88,6 @@ defmodule CustomerFeedback.FeedbackGateway.Broadway do
 
   @impl true
   def handle_batch(:elastic, messages, _batch_info, _context) do
-    # TODO working only after fixing Elasticsearch.Index.Bulk fix
-    # Replaced header/4 function second argument "create" to "index"
     messages
     |> Enum.map(& &1.data)
     |> ElasticsearchContext.create_feedback_documents_in_batch()
